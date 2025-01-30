@@ -1,23 +1,21 @@
-name: Build and deploy to Azure Static Web Apps (Production)
+name: Build and Deploy to Azure Static Web Apps
 
 on:
   push:
     branches:
-      - main  # Trigger on push to 'main' branch
+      - main  # Trigger deployment on push to main branch
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v2
-
-      - name: Deploy to Azure Static Web App
+        
+      - name: 'Set up Azure Static Web Apps'
         uses: azure/static-web-apps-deploy@v1
         with:
-          app_location: "/"  # The location of your app files, e.g., /index.html
-          output_location: ""  # Optional: specify the build output folder if you have one
-          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          action: "upload"
-          
+          app_location: '/'  # Point to the root directory if index.html is there
+          api_location: ''   # Leave empty since you're not using Azure Functions
+          output_location: '' # No output needed
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}  # Set your secret token
