@@ -19,3 +19,4 @@ jobs:
           api_location: ''   # Leave empty since you're not using Azure Functions
           output_location: '' # No output needed
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}  # Set your secret token
+          action: "upload"
