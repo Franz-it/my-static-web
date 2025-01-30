@@ -1,25 +1,33 @@
-name: Deploy Static Web App to Azure
+name: Build and deploy to Azure Static Web Apps (Production)
 
 on:
   push:
     branches:
-      - main
+      - main  # This will trigger the workflow on a push to the 'main' branch
 
 jobs:
-  deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Azure CLI
-        uses: azure/setup-azure-cli@v1
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
 
-      - name: Log in to Azure with Service Principal
-        run: |
-          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+      - name: Install dependencies
+        run: npm install  # Run npm install if you're using a Node.js app
 
-      - name: Upload files to Azure Storage
-        run: |
-          az storage blob upload-batch --destination '$web' --source . --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} --account-key ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }} --overwrite
+      - name: Build the app
+        run: npm run build  # Optional: If you need to run a build step (e.g., for React or Angular)
+
+      - name: Deploy to Azure Static Web App
+        uses: azure/static-web-apps-deploy@v0.2
+        with:
+          app_location: "azure-static-web"  # The location of your app files, e.g., /index.html
+          output_location: "/"  # Optional: specify the build output folder if you have one
+        env:
+          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
